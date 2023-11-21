@@ -30,8 +30,8 @@ def main():
         username = st.secrets["USER"]
         password = st.secrets["SNOWSQL_PWD"]
         warehouse = st.secrets["WAREHOUSE"]
-        database = st.secrets['LANGCHAIN_DEMO_DB']
-        schema = st.secrets['PUBLIC']
+        database = st.secrets['DATABASE']
+        schema = st.secrets['SCHEMA']
         role = st.secrets["ROLE"]
 
         snowflake_url = f'snowflake://{username}:{password}@{snowflake_account}/{database}/{schema}?warehouse={warehouse}&role={role}'
