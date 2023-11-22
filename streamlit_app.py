@@ -1,7 +1,9 @@
 import streamlit as st
-from langchain import OpenAI, SQLDatabase
+
+from langchain import OpenAI, SQLDatabase 
+from snowflake.snowpark import Session 
 from langchain.chains import create_sql_query_chain
-from snowflake.snowpark import Session
+
 
 # Function to check login credentials
 def check_login(username, password):
@@ -43,19 +45,28 @@ def main():
 
         # Connection to the database
         db = SQLDatabase.from_uri(snowflake_url, sample_rows_in_table_info=1, include_tables=['orders', 'locations'])
-
+        st.text(f"Database schema:\n {db.table_info}")
         if submit_button and natural_language_query:
             llm = OpenAI(temperature=0, openai_api_key=OpenAI_API_KEY)
             # Process the natural language query and generate SQL
             database_chain = create_sql_query_chain(llm, db)
-            generated_sql_query = database_chain(natural_language_query)
+            generated_sql_query = database_chain.invoke({"question":natural_language_query}).strip()
 
             # Display the generated SQL query
             st.text("Generated SQL Query:")
             st.code(generated_sql_query)
 
             # Execute and display query results
-            session = Session.builder.configs(db.session_configs).create()
+            connection_parameters = {
+                "account": snowflake_account,
+                "user": username,
+                "password": password,
+                "role": role,
+                "warehouse": warehouse,
+                "database": database,
+                "schema": schema
+            }
+            session = Session.builder.configs(connection_parameters).create()
             query_result = session.sql(generated_sql_query).collect()
             formatted_results = format_query_results(query_result)
 
