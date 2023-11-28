@@ -18,7 +18,7 @@ def main():
     # Login Page
     if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
         st.title("Login to Access the SQL Query Generator")
-        username = st.text_input("Username")
+        username = st.text_input("Username", type="default")
         password = st.text_input("Password", type="password")
         if st.button("Login"):
             if check_login(username, password):
@@ -52,14 +52,22 @@ def main():
         db = SQLDatabase.from_uri(snowflake_url, sample_rows_in_table_info=1, include_tables=['orders', 'locations'])
         st.text(f"Database schema:\n {db.table_info}")
         if submit_button and natural_language_query:
-            llm = OpenAI(temperature=0, openai_api_key=OpenAI_API_KEY)
-            # Process the natural language query and generate SQL
-            database_chain = create_sql_query_chain(llm, db)
-            generated_sql_query = database_chain.invoke({"question":natural_language_query}).strip()
+            with st.spinner('Generating SQL query...'):
+                try:
+                    llm = OpenAI(temperature=0, openai_api_key=OpenAI_API_KEY)
+                    database_chain = create_sql_query_chain(llm, db)
+                    generated_sql_query = database_chain.invoke({"question": natural_language_query}).strip()
+                    print(f'Generated SQL query: {generated_sql_query}')
+                    if generated_sql_query:
+                        st.text("Generated SQL Query:")
+                        st.code(generated_sql_query)
+                    else:
+                        st.error("No SQL query was generated.")
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 
-            # Display the generated SQL query
-            st.text("Generated SQL Query:")
-            st.code(generated_sql_query)
+
+
 
             # Execute and display query results
             connection_parameters = {
