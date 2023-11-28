@@ -1,8 +1,10 @@
 import streamlit as st
 
-from langchain import OpenAI, SQLDatabase 
+from langchain.llms.openai import OpenAI
+from langchain.sql_database import SQLDatabase
 from snowflake.snowpark import Session 
 from langchain.chains import create_sql_query_chain
+from urllib.parse import quote
 
 
 # Function to check login credentials
@@ -36,7 +38,10 @@ def main():
         schema = st.secrets['SCHEMA']
         role = st.secrets["ROLE"]
 
-        snowflake_url = f'snowflake://{username}:{password}@{snowflake_account}/{database}/{schema}?warehouse={warehouse}&role={role}'
+        encoded_password = quote(password)
+
+
+        snowflake_url = f'snowflake://{username}:{encoded_password}@{snowflake_account}/{database}/{schema}?warehouse={warehouse}&role={role}'
 
         # Streamlit UI components
         st.title("Natural Language SQL Query Generator")
