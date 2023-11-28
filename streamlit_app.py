@@ -28,8 +28,8 @@ def main():
     if 'logged_in' in st.session_state and st.session_state['logged_in']:
         # Load secrets for Snowflake and OpenAI
         OpenAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-        snowflake_account = st.secrets["ACCOUNT"]
-        username = st.secrets["USER"]
+        snowflake_account = st.secrets["SNOWFLAKE_ACCOUNT"]
+        username = st.secrets["SNOWFLAKE_USER"]
         password = st.secrets["SNOWSQL_PWD"]
         warehouse = st.secrets["WAREHOUSE"]
         database = st.secrets['DATABASE']
