@@ -41,6 +41,7 @@ def main():
         encoded_password = quote(password)
 
         # User provides their own OpenAI API Key
+        st.markdown("""Please use a throw-away OpenAI key, ie. use it once here and then delete it from your OpenAI account. 使用したOpeanAIキーは即時、OpenAIアカウントから削除してください。""")
         OpenAI_API_KEY = st.text_input("Enter your OpenAI API Key", type="password")
 
 
@@ -48,7 +49,7 @@ def main():
         if OpenAI_API_KEY:
             # Streamlit UI components
             st.title("Natural Language SQL Query Generator")
-            natural_language_query = st.text_area("Enter your query in natural language:")
+            natural_language_query = st.text_area("Enter your query in natural language:", value='Show me orders per city')
             submit_button = st.button("Generate SQL Query")
 
             # Connection to the database
@@ -68,7 +69,7 @@ def main():
                             st.error("No SQL query was generated.")
                     except Exception as e:
                         st.error(f"An error occurred: {e}")
-                        
+
                 # Execute and display query results
                 connection_parameters = {
                     "account": snowflake_account,
