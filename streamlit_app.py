@@ -41,7 +41,7 @@ def main():
         encoded_password = quote(password)
 
         # User provides their own OpenAI API Key
-        st.markdown("""Please use a throw-away OpenAI key, ie. use it once here and then delete it from your OpenAI account. 使用したOpeanAIキーは即時、OpenAIアカウントから削除してください。""")
+        st.markdown("""Please use a throw-away OpenAI key, ie. use it once here and then delete it from your OpenAI account. 使用したOpeanAIキーはここでのクエリを実行後、即時にOpenAIアカウントから削除してください。""")
         OpenAI_API_KEY = st.text_input("Enter your OpenAI API Key", type="password")
 
 
